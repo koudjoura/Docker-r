@@ -1,0 +1,38 @@
+version: '3.1'
+services:
+  php-environment:
+    container_name: tchad
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    depends_on:
+      - mysql_db
+    volumes:
+      - ./:/var/www/html/
+    ports:
+      - 8030:80
+  mysql_db:
+    container_name: soudan
+    image: mysql:latest
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: test2
+      MYSQL_PASSWORD:
+    ports:
+      - "9906:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+  phpmyadmin:
+    image: phpmyadmin:latest
+    restart: always
+    ports:
+      - 8021:80
+    links:
+      - mysql_db
+    environment:
+      PMA_HOST: mysql_db
+      UPLOAD_LIMIT: 100000000
+volumes:
+  datas:
+  mysql_data:

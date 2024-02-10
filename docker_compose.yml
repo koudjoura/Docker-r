@@ -1,0 +1,45 @@
+version: '3.1'
+services:
+  php-environment:
+    container_name: Mon_Environnement_PHP
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    depends_on:
+      - mysql_db
+    volumes:
+      - ./:/var/www/html/
+    ports:
+      - 8000:80
+    environment:
+      PHP_UPLOAD_MAX_FILESIZE: 500M
+      PHP_POST_MAX_SIZE: 500M
+      PHP_MAX_EXECUTION_TIME: 300
+  mysql_db:
+    container_name: Mon_PROJET
+    image: mysql:latest
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: gestionDockerrr
+      MYSQL_PASSWORD:
+    ports:
+      - "9906:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+  phpmyadmin:
+    image: phpmyadmin:latest
+    restart: always
+    ports:
+      - 8080:80
+    links:
+      - mysql_db
+    environment:
+      PMA_HOST: mysql_db
+      UPLOAD_LIMIT: 100M  # Correction ici
+      PHP_UPLOAD_MAX_FILESIZE: 100M  # Correction ici
+      PHP_POST_MAX_SIZE: 100M  # Correction ici
+
+volumes:
+  datas:
+  mysql_data:
